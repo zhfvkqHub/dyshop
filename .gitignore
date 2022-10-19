@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### pwd 및 계정 ###
+application.yml

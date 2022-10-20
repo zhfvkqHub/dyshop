@@ -16,6 +16,8 @@ public class MainController {
 //        List<Item> items = itemService.allItemView();
 //        model.addAttribute("items", items);
 
+        log.info("엥???");
+
         return "index";
     }
 

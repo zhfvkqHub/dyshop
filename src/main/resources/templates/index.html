@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="~{layouts/layout}">
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/layout}"
+>
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css"> </th:block>
 
-<th:block layout:fragment="content">
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <h1>레이아웃</h1>
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script"> </th:block>
+
+<div layout:fragment="content">
+    <div style="border: 1px solid red">
+        컨텐츠 영역
     </div>
-</th:block>
+</div>
 </html>

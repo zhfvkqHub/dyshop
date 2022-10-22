@@ -12,9 +12,4 @@ public class DyshopApplication {
 		SpringApplication.run(DyshopApplication.class, args);
 	}
 
-	@Bean
-	public LayoutDialect layoutDialect() {
-		return new LayoutDialect();
-	}
-
 }

@@ -20,11 +20,18 @@
     padding-top: 30px;
 }
 
-<!-- 생년월일 -->
-.bir_yy,.bir_mm,.bir_dd{
-    width:160px;
-    display:table-cell;
-}
 .bir_mm+.bir_dd, .bir_yy+.bir_mm{
     padding-left:10px;
 }
+
+.btn-lg{width:100%;}
+
+.form-select{
+    border: 1px solid #EDF1FF;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    color : #495057;
+}
+
+#userId{width: 77%; float: left;}
+#idOverlapChk{margin-left : 15px; width:20%; float: left;}

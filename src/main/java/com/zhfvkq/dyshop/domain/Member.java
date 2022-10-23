@@ -10,11 +10,14 @@ import java.util.List;
 @Data
 public class Member {
 
-    @Id @GeneratedValue
-    @Column(name="member_id")
-    private Long id;
+    @Id
+    @Column(name="user_id")
+    private String id;
 
+    @Column(name="user_name")
     private String name;
+
+    private String password;
 
     @Embedded
     private Address address;

@@ -3,7 +3,7 @@
     border-top-right-radius: 0.5rem;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 900px) {
     .rounded-tr-lg-0 {
         border-top-right-radius: 0;
     }
@@ -11,4 +11,9 @@
     .rounded-bl-lg-5 {
         border-bottom-left-radius: 0.5rem;
     }
+}
+
+.login-1{
+    height: 850px;
+    margin-top: 50px;
 }

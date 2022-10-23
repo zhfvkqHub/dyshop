@@ -1,6 +1,7 @@
 package com.zhfvkq.dyshop;
 
 import com.zhfvkq.dyshop.domain.Member;
+import com.zhfvkq.dyshop.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,19 +24,19 @@ public class MemberRepositoryTest {
     @Rollback(false)
     public void testMember(){
         //given
-        Member member = new Member();
-        member.setUsername("memberA");
-
-        //when
-        Long saveId = memberRepository.save(member);
-        Member findMember = memberRepository.find(saveId);
-
-        //then
-        Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
-        // 같은 트랜잭션 안에서는 영속성 컨텍스트가 같기 때문에 저장한 member와 조회한 findMember는 같은 엔티티로 인식한다.
-        Assertions.assertThat(findMember).isEqualTo(member);
-        System.out.println("findMember == member : " + (findMember == member));
+//        Member member = new Member();
+//        member.setUsername("memberA");
+//
+//        //when
+//        Long saveId = memberRepository.save(member);
+//        Member findMember = memberRepository.find(saveId);
+//
+//        //then
+//        Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
+//        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+//        // 같은 트랜잭션 안에서는 영속성 컨텍스트가 같기 때문에 저장한 member와 조회한 findMember는 같은 엔티티로 인식한다.
+//        Assertions.assertThat(findMember).isEqualTo(member);
+//        System.out.println("findMember == member : " + (findMember == member));
 
     }
 

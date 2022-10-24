@@ -1,9 +1,10 @@
 package com.zhfvkq.dyshop.member.controller;
 
 import com.zhfvkq.dyshop.member.SessionConst;
-import com.zhfvkq.dyshop.member.dto.MemberForm;
+import com.zhfvkq.dyshop.member.dto.MemberJoinForm;
 import com.zhfvkq.dyshop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/member")
 @Controller
@@ -22,14 +23,16 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/login")
-    public String loginForm(){
+    public String loginForm(Model model){
+        model.addAttribute("login", new LoginForm());
         return "member/login";
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute MemberForm form, BindingResult bindingResult,
+    public String login(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request){
+
         if(bindingResult.hasErrors()) return "member/login";
 
         // 로그인 성공
@@ -40,15 +43,24 @@ public class MemberController {
     }
 
     @GetMapping("/signup")
-    public String singupForm(Model model){
+    public String signupForm(Model model){
+        model.addAttribute("member", new MemberJoinForm());
+        return "member/signup";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@Valid MemberJoinForm memberJoinForm, BindingResult bindingResult){
+
         return "member/signup";
     }
 
     /**
-     * 아이디 중복확인
+     * 아이디 중복 채크
      */
-    @GetMapping("/member/{userChkId}/exists")
+    @GetMapping("/{userChkId}/exists")
+    @ResponseBody
     public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userChkId){
+        log.info("userChkId == {}", userChkId);
         return ResponseEntity.ok(memberService.checkUserIdDuplicate(userChkId));
     }
 }

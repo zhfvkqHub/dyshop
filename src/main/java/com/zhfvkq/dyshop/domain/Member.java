@@ -3,6 +3,7 @@ package com.zhfvkq.dyshop.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,12 @@ public class Member {
     private String name;
 
     private String password;
+    private int misspwdCnt; // 비밀번호 오류 횟수
+    private String email;
+    private String role;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
+
 
     @Embedded
     private Address address;

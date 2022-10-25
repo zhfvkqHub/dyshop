@@ -29,7 +29,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult,
+    public String login(@ModelAttribute("member") @Valid LoginForm form, BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request){
 
@@ -49,18 +49,24 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid MemberJoinForm memberJoinForm, BindingResult bindingResult){
+    public String signup(@Valid @ModelAttribute("member") MemberJoinForm memberJoinForm, BindingResult bindingResult){
 
-        return "member/signup";
-    }
+        log.info("member = {}",memberJoinForm.getUserId());
 
-    /**
-     * 아이디 중복 채크
-     */
-    @GetMapping("/{userChkId}/exists")
-    @ResponseBody
-    public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userChkId){
-        log.info("userChkId == {}", userChkId);
-        return ResponseEntity.ok(memberService.checkUserIdDuplicate(userChkId));
+        if(!memberJoinForm.getUserId().equals(memberJoinForm.getConfirmId())){ // 중복 확인 아이디와 입력 아이디가 다름
+            bindingResult.reject("notConfirm");
+        }
+        if(!memberJoinForm.getPassword().equals(memberJoinForm.getRePassword())){ // 비밀번호와 비밀번호 확인 값이 다름
+            bindingResult.reject("notPassword");
+        }
+
+        if(bindingResult.hasErrors()) {
+            log.info("bindingResult = {} " , bindingResult);
+            return "member/signup";
+        }
+
+        // 회원가입
+        memberService.memberJoin(memberJoinForm);
+        return "redirect:/member/login";
     }
 }

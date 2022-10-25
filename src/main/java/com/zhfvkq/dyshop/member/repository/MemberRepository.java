@@ -6,13 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, String> {
 
-    boolean existsById(String userId);
 
-    @Override
-    Optional<Member> findById(String userChkId);
+    boolean existsByUserId(String userId);
+
+    Optional<Member> findByUserId(String userChkId);
 }

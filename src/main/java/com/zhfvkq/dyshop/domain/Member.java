@@ -1,6 +1,6 @@
 package com.zhfvkq.dyshop.domain;
 
-import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-public class Member {
+@Getter
+public class Member{
 
+//    @GeneratedValue
+//    private Long id;
     @Id
     @Column(name="user_id")
     private String userId;
@@ -19,15 +21,31 @@ public class Member {
     private String password;
     private int misspwdCnt; // 비밀번호 오류 횟수
     private String email;
-    private String role;
-    private LocalDateTime address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
-
-//    @Embedded
-//    private Address address;
-
     @OneToMany(mappedBy = "member") // 연관 관계의 주인은 FK랑 가까운 컬럼에 지정 (= member)
     private List<Order> orders = new ArrayList<>();
+
+    public Member() {
+
+    }
+
+    // 회원가입
+    public void memberJoin(String userId, String name, String password, String email, Role role) {
+        this.userId = userId;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.misspwdCnt = 0;
+        this.createDate = LocalDateTime.now();
+    }
+
+
 }

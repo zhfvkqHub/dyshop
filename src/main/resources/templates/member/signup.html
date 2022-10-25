@@ -17,35 +17,84 @@
          */
         function idOverlapChked() {
             let userId = document.getElementById('userId').value;
-            let url = `/member/${userId}/exists`;
+            let url = `/member/api/${userId}/exists`;
 
             if(userId === null || userId === ""){
                 document.getElementById("idOverlapMessage").innerHTML = '아이디를 입력해주세요.';
                 return;
             }
 
-            ajax(url, userId);
+            ajax("GET", url, userId);
         }
 
-        function ajax(url, userId) {
+        /**
+         * 회원가입
+         */
+        function joinMember(){
+          let selForm = document.querySelector('#memberForm');
+          let data = new FormData(selForm);
+          let serializedFormData = serialize(data);
+          let url = "/member/api/signup";
+          ajax("POST", url, serializedFormData);
+        }
+
+        /**
+         * json 변환
+         * @param rawData
+         * @returns {{}}
+         */
+        function serialize (rawData) {
+          let rtnData = {};
+          for (let [key, value] of rawData) {
+            let sel = document.querySelectorAll("[name=" + key + "]");
+            // Array Values
+            if (sel.length > 1) {
+              if (rtnData[key] === undefined) {
+                rtnData[key] = [];
+              }
+              rtnData[key].push(value);
+            }else {
+              rtnData[key] = value;
+            }
+          }
+          return rtnData;
+        }
+
+        function ajax(method, url, data) {
             let xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) { // 완료
                     if (xhr.status === 200) { // success
-                        log(xhr);
+
+                      if(method === "GET"){ // 아이디 중복 확인
                         let template;
                         if(xhr.response === "true"){
-                            template = '사용 불가능한 아이디입니다.';
+                          template = '사용 불가능한 아이디입니다.';
                         }else{
-                            template = '사용 가능한 아이디입니다.';
-                            document.getElementById("confirmId").innerHTML = userId;
+                          template = '사용 가능한 아이디입니다.';
+                          // document.getElementById("confirmId").innerText = userId;
+                          document.getElementById("confirmId").value = data;
                         }
                         document.getElementById("idOverlapMessage").innerHTML = template;
+
+                      }else{ // 회원가입 완료
+                        alert("회원가입이 완료 되었습니다.");
+                        location.href = "/member/login";
+                      }
                     }
                 }
             };
-            xhr.open("GET", url, false);
-            xhr.send();
+
+            if(method === "GET"){
+              xhr.open("GET", url, false);
+              xhr.send();
+            }else{
+              xhr.open('POST', url, true);
+              xhr.responseType = "json";
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              xhr.send(JSON.stringify(data));
+            }
+
         }
 
 
@@ -59,75 +108,91 @@
           </a>
         </div>
 
-        <form th:action="@{/member/signup}" th:object="${member}" method="post">
+        <form th:action="@{/member/signup}" th:object="${member}" method="post" id="memberForm">
+
+          <div th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+          </div>
           <div class="form-group">
-            <label for="userId" class="form-label mt-4">아이디</label><br>
-            <input type="text" class="form-control" id="userId" th:field="*{userId}">
+            <label for="userId" class="form-label mt-4" >아이디</label><br>
+            <input type="text" class="form-control" id="userId" th:field="*{userId}" th:errorclass="is-invalid">
             <button class="btn btn-primary" type="button" id="idOverlapChk" th:onclick="|idOverlapChked()|">중복확인</button>
+            <p th:if="${#fields.hasErrors('userId')}" class="is-invalid" th:errors="*{userId}">아이디 오류 삐뽀삐뽀</p>
             <label class="is-valid" id="idOverlapMessage"></label>
-            <input type="hidden" id="confirmId" th:field="*{confirmId}" />
+            <input type="hidden" id="confirmId" th:field="*{confirmId}"/>
+            <p th:if="${#fields.hasErrors('confirmId')}" class="is-invalid" th:errors="*{confirmId}">아이디 중복확인 오류 삐뽀삐뽀</p>
           </div>
 
           <div class="form-group has-success">
-            <label class="form-label mt-4" for="inputValid">비밀번호</label>
-            <input type="password" class="form-control is-valid" id="inputValid" th:field="*{password}">
+            <label class="form-label mt-4" for="password">비밀번호</label>
+            <input type="password" class="form-control is-valid" id="password" th:field="*{password}" th:errorclass="is-invalid">
+              <p th:if="${#fields.hasErrors('password')}" class="is-invalid" th:errors="*{password}">비밀번호 오류 삐뽀삐뽀</p>
           </div>
           <div class="form-group has-danger">
             <label class="form-label mt-4" for="inputInvalid">비밀번호 재확인</label>
-            <input type="password" class="form-control is-invalid" id="inputInvalid" th:field="*{rePassword}">
+            <input type="password" class="form-control" id="inputInvalid" th:field="*{rePassword}" th:errorclass="is-invalid">
+            <p th:if="${#fields.hasErrors('rePassword')}" class="is-invalid" th:errors="*{rePassword}">비밀번호 오류 삐뽀삐뽀</p>
           </div>
 
           <div class="form-group">
             <label for="exampleInputEmail4" class="form-label mt-4">이름</label>
-            <input type="text" class="form-control" id="exampleInputEmail4" th:field="*{userName}">
+            <input type="text" class="form-control" id="exampleInputEmail4" th:field="*{userName}" th:errorclass="is-invalid">
+            <p th:if="${#fields.hasErrors('userName')}" class="is-invalid" th:errors="*{userName}">이름 오류 삐뽀삐뽀</p>
           </div>
-        <div class ="bir_wrap" th:field="*{address}">
-            <label class="form-label mt-4">생년월일</label><br>
-            <div class="bir_yy" style="float:left;width:30%;">
-                <span class="ps_box">
-                    <input type="text" class="form-control" id="yy" placeholder="년(4자)" maxlength="4">
-                </span>
-            </div>
-            <div class="bir_mm" style="float:left;width:30%;">
-                <span class="ps_box focus">
-                    <select class="form-select" id="mm">
-                        <option>월</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                        <option>11</option>
-                        <option>12</option>
-                     </select>
-                </span>
-            </div>
-            <div class="bir_dd" style="float:left;width:30%;">
-                <span class="ps_box">
-                    <input type ="text" class="form-control" id ="dd" placeholder="일" maxlength="2">
-                </span>
-            </div>
-        </div><br><br>
+<!--        <div class ="bir_wrap">-->
+<!--            <label class="form-label mt-4">생년월일</label><br>-->
+<!--            <div class="bir_yy" style="float:left;width:30%;">-->
+<!--                <span class="ps_box">-->
+<!--                    <input type="text" class="form-control" id="yy" placeholder="년(4자)" maxlength="4" th:field="*{yy}" th:errorclass="is-invalid">-->
+<!--                </span>-->
+<!--            </div>-->
+<!--            <div class="bir_mm" style="float:left;width:30%;">-->
+<!--                <span class="ps_box focus">-->
+<!--                    <select class="form-select" id="mm" th:field="*{mm}" th:errorclass="is-invalid">-->
+<!--                        <option value="">월</option>-->
+<!--                        <option value="1">1</option>-->
+<!--                        <option value="2">2</option>-->
+<!--                        <option value="3">3</option>-->
+<!--                        <option value="4">4</option>-->
+<!--                        <option value="5">5</option>-->
+<!--                        <option value="6">6</option>-->
+<!--                        <option value="7">7</option>-->
+<!--                        <option value="8">8</option>-->
+<!--                        <option value="9">9</option>-->
+<!--                        <option value="10">10</option>-->
+<!--                        <option value="11">11</option>-->
+<!--                        <option value="12">12</option>-->
+<!--                     </select>-->
+<!--                </span>-->
+<!--            </div>-->
+<!--            <div class="bir_dd" style="float:left;width:30%;">-->
+<!--                <span class="ps_box">-->
+<!--                    <input type ="text" class="form-control" id ="dd" placeholder="일" maxlength="2" th:field="*{dd}" th:errorclass="is-invalid">-->
+<!--                </span>-->
+<!--            </div><br>-->
+<!--            <p th:if="${#fields.hasErrors('yy')}" class="is-invalid" th:errors="*{yy}">yy 오류 삐뽀삐뽀</p>-->
+<!--            <p th:if="${#fields.hasErrors('mm')}" class="is-invalid" th:errors="*{mm}">mm 오류 삐뽀삐뽀</p>-->
+<!--            <p th:if="${#fields.hasErrors('dd')}" class="is-invalid" th:errors="*{dd}">dd 오류 삐뽀삐뽀</p>-->
+<!--        </div><br><br>-->
           <div class="form-group">
             <label for="sex" class="form-label mt-4">성별</label><br>
-            <select class="form-select" id="sex" th:field="*{sex}">
+            <select class="form-select" id="sex" th:field="*{sex}" th:errorclass="is-invalid">
               <option value="">선택</option>
               <option value="남자">남자</option>
               <option value="여자">여자</option>
             </select>
           </div>
+          <p th:if="${#fields.hasErrors('sex')}" class="is-invalid" th:errors="*{sex}">성별 오류 삐뽀삐뽀</p>
           <div class="form-group">
             <label for="email" class="form-label mt-4">본인 확인 이메일</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="선택입력" th:field="*{email}">
-          </div><br>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="선택입력" th:field="*{email}" th:errorclass="is-invalid">
+          </div>
+          <p th:if="${#fields.hasErrors('email')}" class="is-invalid" th:errors="*{email}">email 오류 삐뽀삐뽀</p>
+            <br>
 
           <div class="d-grid gap-2">
-            <button class="btn btn-primary btn-lg" type="button">가입하기</button>
+<!--            <button class="btn btn-primary btn-lg" type="button" th:onclick="|joinMember()|">가입하기</button>-->
+            <button class="btn btn-primary btn-lg" type="submit">가입하기</button>
           </div>
         </form>
       </div>

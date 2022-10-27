@@ -21,7 +21,7 @@ public class LogInterceptor implements HandlerInterceptor {
         request.setAttribute(LOG_ID, uuid);
 
         if(handler instanceof HandlerMethod){
-            // 호출한 컨트롤러 메서드의 모든 정보가 포함되어 있음.
+            // 호출한 컨트롤러 메서드의 모든 정보 포함
             HandlerMethod hm = (HandlerMethod) handler;
         }
 

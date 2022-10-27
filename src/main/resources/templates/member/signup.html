@@ -9,6 +9,7 @@
 </head>
 
 <div layout:fragment="content">
+
     <script th:inline="javascript">
         const log = console.log;
 
@@ -96,8 +97,6 @@
             }
 
         }
-
-
     </script>
 
     <section class="bg-light">
@@ -108,7 +107,7 @@
           </a>
         </div>
 
-        <form th:action="@{/member/signup}" th:object="${member}" method="post" id="memberForm">
+        <form th:action="@{/member/signup}" th:object="${user}" method="post" id="memberForm">
 
           <div th:if="${#fields.hasGlobalErrors()}">
             <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>

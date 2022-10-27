@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
-<!-- Section: Design Block -->
 <head>
     <meta charset="utf-8">
     <title>로그인</title>
@@ -20,38 +20,42 @@
                 <div class="col-lg-8">
                     <div class="card-body py-5 px-md-5">
 
-                        <form style="width:50%;" th:action="@{/member/login}" th:object="${login}" method="post">
-                            <!-- Email input -->
+                        <form style="width:50%;" th:action="@{/member/login}" th:object="${user}" method="post">
+
+                            <div th:if="${#fields.hasGlobalErrors()}">
+                                <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+                            </div>
+
+                            <!-- userId input -->
                             <div class="form-outline mb-4">
-                                <input type="text" id="userId" class="form-control" />
+                                <input type="text" id="userId" class="form-control" th:field="*{userId}" />
                                 <label class="form-label" for="userId">아이디 입력</label>
+                                <p th:if="${#fields.hasErrors('userId')}" class="is-invalid" th:errors="*{userId}">아이디 오류 삐뽀삐뽀</p>
                             </div>
 
                             <!-- Password input -->
                             <div class="form-outline mb-4">
-                                <input type="password" id="userPwd" class="form-control" />
-                                <label class="form-label" for="userId">비밀번호 입력</label>
+                                <input type="password" id="password" class="form-control" th:field="*{password}" />
+                                <label class="form-label" for="password">비밀번호 입력</label>
+                                <p th:if="${#fields.hasErrors('password')}" class="is-invalid" th:errors="*{password}">비밀번호 오류 삐뽀삐뽀</p>
                             </div>
 
-                            <!-- 2 column grid layout for inline styling -->
                             <div class="row mb-4">
                                 <div class="col d-flex justify-content-center">
-                                    <!-- Checkbox -->
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" th:field="*{idMaintain}" id="idMaintain" />
+                                        <input class="form-check-input" type="checkbox" th:field="*{idMaintain}" id="idMaintain" />
 <!--                                        <input type="hidden" value="on" id="_idMaintain"/> -->
                                         <label class="form-check-label" for="idMaintain"> 로그인 상태 유지 </label>
                                     </div>
                                 </div>
 
                                 <div class="col">
-                                    <!-- Simple link -->
                                     <a href="#!">아이디/비밀번호 찾기</a>
                                 </div>
                             </div>
 
                             <!-- Submit button -->
-                            <button type="button" class="btn btn-primary btn-block mb-4">로그인</button>
+                            <button th:type="submit" class="btn btn-primary btn-block mb-4">로그인</button>
 
                             <!-- Submit button -->
                             <button type="button" onclick="location.href='/member/signup'" class="btn btn-primary btn-block mb-4">회원가입</button>

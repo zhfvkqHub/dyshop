@@ -1,7 +1,5 @@
 package com.zhfvkq.dyshop.member.api;
 
-import com.zhfvkq.dyshop.member.SessionConst;
-import com.zhfvkq.dyshop.member.controller.LoginForm;
 import com.zhfvkq.dyshop.member.dto.MemberJoinForm;
 import com.zhfvkq.dyshop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
@@ -54,7 +50,7 @@ public class MemberApiController {
     }
 
     /**
-     * 아이디 중복 채크 api
+     * 아이디 중복 체크 api
      */
     @GetMapping("/api/{userChkId}/exists")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userChkId){

@@ -1,4 +1,4 @@
-package com.zhfvkq.dyshop.member.controller;
+package com.zhfvkq.dyshop.member.dto;
 
 import lombok.Data;
 

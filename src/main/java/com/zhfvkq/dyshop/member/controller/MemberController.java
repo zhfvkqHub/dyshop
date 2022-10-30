@@ -1,6 +1,7 @@
 package com.zhfvkq.dyshop.member.controller;
 
 import com.zhfvkq.dyshop.domain.Member;
+import com.zhfvkq.dyshop.member.dto.LoginForm;
 import com.zhfvkq.dyshop.member.dto.MemberJoinForm;
 import com.zhfvkq.dyshop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -19,17 +19,17 @@ import javax.validation.Valid;
 @RequestMapping("/member")
 @Controller
 public class MemberController {
+
     private final MemberService memberService;
 
     @GetMapping("/login")
-    public String loginForm(@RequestParam(required = false) String error,
-                            Model model){
+    public String loginForm(@RequestParam(required = false) String error, Model model){
 
         model.addAttribute("user", new LoginForm());
         return "member/login";
     }
 
-    @PostMapping("/login")
+//    @PostMapping("/login")
     public String login(@ModelAttribute("login") @Valid LoginForm loginForm, BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request,

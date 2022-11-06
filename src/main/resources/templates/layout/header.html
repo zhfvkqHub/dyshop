@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<script th:inline="javascript">
+
+</script>
 
 <!--headerFragment 선언-->
 <div th:fragment="headerFragment">
@@ -16,28 +21,16 @@
     </div>
     <div class="col-lg-6 text-center text-lg-right">
       <div class="d-inline-flex align-items-center">
-        <a class="text-dark" href="/member/login">로그인</a>
-        <span class="text-muted px-2">|</span>
-        <a class="text-dark" href="/member/signup">회원가입</a>
-
-<!--        <a class="text-dark" href="#;" th:field="${user.userId}">회원명</a>-->
-<!--        <a class="text-dark" href="/member/signup">마이페이지</a>-->
-
-<!--        <a class="text-dark px-2" href="">-->
-<!--          <i class="fab fa-facebook-f"></i>-->
-<!--        </a>-->
-<!--        <a class="text-dark px-2" href="">-->
-<!--          <i class="fab fa-twitter"></i>-->
-<!--        </a>-->
-<!--        <a class="text-dark px-2" href="">-->
-<!--          <i class="fab fa-linkedin-in"></i>-->
-<!--        </a>-->
-<!--        <a class="text-dark px-2" href="">-->
-<!--          <i class="fab fa-instagram"></i>-->
-<!--        </a>-->
-<!--        <a class="text-dark pl-2" href="">-->
-<!--          <i class="fab fa-youtube"></i>-->
-<!--        </a>-->
+          <div sec:authorize="isAnonymous()" >
+              <a class="text-dark" th:href="@{/member/login}">로그인</a>
+              <span class="text-muted px-2">|</span>
+              <a class="text-dark" th:href="@{/member/signup}" th:field="signup">회원가입</a>
+          </div>
+          <div sec:authorize="isAuthenticated()">
+              <a class="text-dark" sec:authorize="isAuthenticated()" href="#;" th:field="">회원명</a>
+              <span class="text-muted px-2">|</span>
+              <a class="text-dark"  th:href="@{/member/logout}" th:field="logout">로그아웃</a>
+          </div>
       </div>
     </div>
   </div>

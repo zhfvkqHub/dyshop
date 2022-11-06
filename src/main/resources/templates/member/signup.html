@@ -18,7 +18,7 @@
          */
         function idOverlapChked() {
             let userId = document.getElementById('userId').value;
-            let url = `/member/api/${userId}/exists`;
+            let url = `/api/member/${userId}/exists`;
 
             if(userId === null || userId === ""){
                 document.getElementById("idOverlapMessage").innerHTML = '아이디를 입력해주세요.';
@@ -35,7 +35,7 @@
           let selForm = document.querySelector('#memberForm');
           let data = new FormData(selForm);
           let serializedFormData = serialize(data);
-          let url = "/member/api/signup";
+          let url = "/api/member/signup";
           ajax("POST", url, serializedFormData);
         }
 

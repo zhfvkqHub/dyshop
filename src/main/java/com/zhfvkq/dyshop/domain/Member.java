@@ -1,6 +1,6 @@
 package com.zhfvkq.dyshop.domain;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class Member{
 
 //    @GeneratedValue
@@ -32,12 +33,8 @@ public class Member{
     @OneToMany(mappedBy = "member") // 연관 관계의 주인은 FK랑 가까운 컬럼에 지정 (= member)
     private List<Order> orders = new ArrayList<>();
 
-    public Member() {
-
-    }
-
-    // 회원가입
-    public void memberJoin(String userId, String name, String password, String email, Role role) {
+    @Builder
+    public Member(String userId, String name, String password, String email, Role role) {
         this.userId = userId;
         this.name = name;
         this.password = password;
@@ -46,6 +43,8 @@ public class Member{
         this.misspwdCnt = 0;
         this.createDate = LocalDateTime.now();
     }
+
+
 
 
 }

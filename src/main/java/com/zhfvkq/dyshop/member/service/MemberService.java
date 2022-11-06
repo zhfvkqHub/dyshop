@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 
 @Slf4j
 @Service
@@ -19,7 +17,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     /**
      * 아이디 중복 체크
@@ -37,7 +34,14 @@ public class MemberService {
     public String memberJoin(MemberJoinForm member) {
 
         Member memberEntity = new Member();
-        memberEntity.memberJoin(member.getUserId(), member.getUserName(), passwordEncoder.encode(member.getPassword()), member.getEmail(), Role.USER);
+
+        Member memberJoin = Member.builder()
+                .userId(member.getUserId())
+                .name(member.getUserName())
+                .password(passwordEncoder.encode(member.getPassword()))
+                .email(member.getEmail())
+                .role(Role.USER)
+                .build();
 
         memberRepository.save(memberEntity);
 
@@ -50,7 +54,7 @@ public class MemberService {
     public Member login(String userId, String password) {
 
         return memberRepository.findByUserId(userId)
-                .filter(m -> passwordEncoder.matches(m.getPassword(),password))
+                .filter(m -> passwordEncoder.matches(password, m.getPassword()))
                 .orElse(null);
     }
 }

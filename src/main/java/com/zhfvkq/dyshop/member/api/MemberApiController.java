@@ -4,6 +4,7 @@ import com.zhfvkq.dyshop.member.dto.MemberJoinForm;
 import com.zhfvkq.dyshop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,7 @@ import javax.validation.Valid;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping(value = "/api/member", produces = MediaTypes.HAL_JSON_VALUE)
 public class MemberApiController {
 
     private final MemberService memberService;
@@ -26,7 +27,7 @@ public class MemberApiController {
      * @param bindingResult
      * @return
      */
-    @PostMapping("/api/signup")
+    @PostMapping("/signup")
     public ResponseEntity<BasicResponse> signup(@Valid @RequestBody MemberJoinForm memberJoinForm, BindingResult bindingResult){
 
         log.info("member api = {}", memberJoinForm.getUserId());
@@ -47,12 +48,13 @@ public class MemberApiController {
         // 회원가입
         memberService.memberJoin(memberJoinForm);
         return ResponseEntity.status(HttpStatus.OK).body(new BasicResponse(memberJoinForm));
+
     }
 
     /**
      * 아이디 중복 체크 api
      */
-    @GetMapping("/api/{userChkId}/exists")
+    @GetMapping("/{userChkId}/exists")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userChkId){
         log.info("userChkId == {}", userChkId);
         return ResponseEntity.ok(memberService.checkUserIdDuplicate(userChkId));

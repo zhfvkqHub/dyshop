@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<Member> member = memberRepository.findByUserId(username);
 
-        if(member == null){
+        if(member.isEmpty()){
             throw new UsernameNotFoundException("UsernameNotFoundException");
         }
 

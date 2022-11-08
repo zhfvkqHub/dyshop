@@ -4,19 +4,12 @@ import com.zhfvkq.dyshop.member.service.CustomUserDetailsService;
 import com.zhfvkq.dyshop.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Slf4j
 @Configuration
@@ -28,11 +21,9 @@ public class SecurityConfig {
     private final LogoutExecute logoutExecute;
     private final LogoutSuccess logoutSuccess;
     private final CustomUserDetailsService customUserDetailsService;
+
     private final AuthenticationEntryException authenticationEntryException;
     private final AccessDeniedHandlerException accessDeniedHandlerException;
-
-
-    private String[] ignoredMatcherPattern = {"/", "/img/**", "/lib/**", "/member/**"};
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -40,21 +31,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomAuthenticationProvider customAuthenticationProvider() {
+    public CustomAuthenticationProvider authProvider() {
         return new CustomAuthenticationProvider();
     }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
-        return authConfiguration.getAuthenticationManager();
-    }
-
-
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .authorizeRequests()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
         ;
 
@@ -94,6 +80,8 @@ public class SecurityConfig {
                 .accessDeniedHandler(accessDeniedHandlerException) // 인가 예외
         ;
 
+        http.authenticationProvider(authProvider());
+
         return http.build();
 
     }
@@ -102,12 +90,11 @@ public class SecurityConfig {
     /**
      * 정적 자원 및 루트 페이지 ignore
      */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .antMatchers(ignoredMatcherPattern);
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring()
+//                .antMatchers("/**");
+//    }
 
 
 }

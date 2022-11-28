@@ -30,17 +30,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        log.info("호출 성공11");
-
         String username = authentication.getName();
         String password = (String)authentication.getCredentials();
-
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new BadCredentialsException("BadCredentialsException");
         }
+
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 

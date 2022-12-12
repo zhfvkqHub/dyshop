@@ -1,19 +1,16 @@
 package com.zhfvkq.dyshop;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.StringUtils;
+import org.springframework.test.context.junit4.SpringRunner;
 
-//@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class DyshopApplicationTests {
 
     @Test
     void testHasText() {
-        Assert.assertTrue(StringUtils.hasLength(" ")); // true
-        Assert.assertFalse(StringUtils.hasLength(""));
-        Assert.assertTrue(StringUtils.hasLength("흥"));
-        Assert.assertFalse(StringUtils.hasLength(null));
     }
 
 }

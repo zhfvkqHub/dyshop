@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MemberRepositoryTest {
+
     @Autowired
     MemberRepository memberRepository;
 

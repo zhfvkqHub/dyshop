@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -53,7 +54,7 @@ public class AskController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Object> askSave(@Valid @RequestBody AskForm askForm, BindingResult bindingResult){
+    public ResponseEntity<Object> askSave(@Valid @RequestBody AskForm askForm, BindingResult bindingResult) throws Exception{
 
         if(bindingResult.hasErrors()){
 
@@ -72,5 +73,9 @@ public class AskController {
 //            return ResponseEntity.status(HttpStatus.OK).body(saveUser);
             return ResponseEntity.status(HttpStatus.OK).body("");
         }
+
+    }
+    private String getValue(String aa){
+        return Objects.nonNull(aa) ? aa : null;
     }
 }

@@ -21,12 +21,11 @@ public class SecurityConfig {
     private final LogoutExecute logoutExecute;
     private final LogoutSuccess logoutSuccess;
     private final CustomUserDetailsService customUserDetailsService;
-
     private final AuthenticationEntryException authenticationEntryException;
     private final AccessDeniedHandlerException accessDeniedHandlerException;
 
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

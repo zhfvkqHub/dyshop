@@ -33,9 +33,7 @@ public class MemberService {
      */
     public String memberJoin(MemberJoinForm member) {
 
-        Member memberEntity = new Member();
-
-        Member memberJoin = Member.builder()
+        Member memberEntity = Member.builder()
                 .userId(member.getUserId())
                 .name(member.getUserName())
                 .password(passwordEncoder.encode(member.getPassword()))

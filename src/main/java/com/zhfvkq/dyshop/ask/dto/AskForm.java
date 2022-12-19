@@ -1,22 +1,24 @@
 package com.zhfvkq.dyshop.ask.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.io.File;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class AskForm {
 
-    @NotBlank(message = "이메일을 입력해주세요.")
-    @Email(message = "올바른 이메일 주소를 입력해주세요.")
+    @NotBlank(message = "empty.email")
+    @Email(message = "invalid.email")
     private String email;
 
-    @NotBlank(message = "휴대폰 번호를 입력해주세요.")
+    @NotBlank(message = "empty.phoneNumber")
     private String phoneNumber;
 
     private String gateType; //문의 유형
@@ -25,9 +27,20 @@ public class AskForm {
 
     private String cnfrm; //확인 사항
 
-    @NotBlank(message = "문의 내용을 입력해주세요.")
-    private String contactDetails; //문의 내용
+    @NotBlank(message = "empty.ask")
+    private String ask; //문의 내용
 
-    private File atchdFile; // 첨부파일
+    private MultipartFile atchdFile; // 첨부파일
 
+    @Builder
+
+    public AskForm(String email, String phoneNumber, String gateType, String dtlType, String cnfrm, String ask, MultipartFile atchdFile) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.gateType = gateType;
+        this.dtlType = dtlType;
+        this.cnfrm = cnfrm;
+        this.ask = ask;
+        this.atchdFile = atchdFile;
+    }
 }

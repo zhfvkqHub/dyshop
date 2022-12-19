@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Slf4j
@@ -18,8 +19,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private UserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
 
     /**
      * 인증에 관련된 검증 처리
@@ -34,6 +33,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = (String)authentication.getCredentials();
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new BadCredentialsException("BadCredentialsException");

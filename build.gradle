@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// thymeleaf reload 등 기능지원
 	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.projectlombok:lombok:1.18.22'
 //	testImplementation 'junit:junit:4.13.1'
 	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 	testImplementation 'org.projectlombok:lombok:1.18.24'

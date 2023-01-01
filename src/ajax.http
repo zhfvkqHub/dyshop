@@ -1,0 +1,8 @@
+POST http://localhost:8080/ajaxLogin
+Content-Type: application/json
+X-Requested-With: XMLHttpRequest
+
+{
+  "userId": "user",
+  "password":  "1111"
+}

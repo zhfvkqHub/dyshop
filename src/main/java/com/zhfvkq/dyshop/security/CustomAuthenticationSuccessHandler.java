@@ -18,7 +18,7 @@ import java.io.IOException;
  * 로그인 성공 후 처리
  */
 @Component
-public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -26,7 +26,9 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        // AuthenticationException 발생 시 사용자의 요청 정보가 담긴 캐시가 세션에 저장됨 -> 로그인 성공 시 redirect
+        setDefaultTargetUrl("/");
+
+        // 인증을 받기 전에 가려고 했던 url로 이동
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
         if(savedRequest != null){

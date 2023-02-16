@@ -2,7 +2,7 @@ package io.security.corespringsecurity.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhfvkq.dyshop.security.dto.AccountDto;
-import com.zhfvkq.dyshop.security.token.AjaxAuthenticationToken;
+import com.zhfvkq.dyshop.security.ajax.AjaxAuthenticationToken;
 import com.zhfvkq.dyshop.security.util.WebUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;

@@ -10,9 +10,11 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, String> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByUserId(String userId);
-    Optional<Member> findByUserId(String userChkId);
+//    Optional<Member> findByUserId(String userChkId);
+
+    Member findByUsername(String userName);
 
 }

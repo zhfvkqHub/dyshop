@@ -1,116 +1,90 @@
-package com.zhfvkq.dyshop.security;
+package io.security.corespringsecurity.security.configs;
 
-import com.zhfvkq.dyshop.member.service.CustomUserDetailsService;
+import com.zhfvkq.dyshop.security.ajax.AjaxAuthenticationProvider;
+import com.zhfvkq.dyshop.security.ajax.AjaxLoginProcessingFilter;
+import com.zhfvkq.dyshop.security.CustomAccessDeniedHandler;
 import com.zhfvkq.dyshop.security.provider.CustomAuthenticationProvider;
-import io.security.corespringsecurity.security.filter.AjaxLoginProcessingFilter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Slf4j
 @Configuration
-@RequiredArgsConstructor
-public class SecurityConfig {
+@EnableWebSecurity
+@Order(1)
+@Slf4j
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private String[] permitAllResources = {"/api/public/**","/sample","/aws/**","/sample/**", "/login/**", "/outer/**", "/fonts/**", "/landing/**", "/error/**", "/aws/health/check"};
 
-    private final AuthenticationSuccess authenticationSuccess;
-    private final AuthenticationFailure authenticationFailure;
-    private final LogoutExecute logoutExecute;
-    private final LogoutSuccess logoutSuccess;
-    private final CustomUserDetailsService customUserDetailsService;
-    private final AuthenticationEntryException authenticationEntryException;
-    private final AccessDeniedHandlerException accessDeniedHandlerException;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        // 정적 파일은 보안 필터 거치지 않음
+        web.ignoring()
+                .antMatchers(permitAllResources)
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
-    @Bean
-    public CustomAuthenticationProvider authProvider() {
-        return new CustomAuthenticationProvider();
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(ajaxAuthenticationProvider());
     }
-    
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    private AuthenticationProvider ajaxAuthenticationProvider() {
+        return new AjaxAuthenticationProvider();
+    }
+
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        http
+                .antMatcher("/api/**")
+                .authorizeRequests()
+                .anyRequest().authenticated();
+        http
+                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class); // ajax 로그인
 
         http
-                .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated()
-        ;
+                .csrf().disable(); // post 방식일 때는 필수
+    }
 
-        http.formLogin() // 로그인
-                .loginPage("/member/login")
-                .usernameParameter("userId")
-                .passwordParameter("password")
-                .loginProcessingUrl("/member/login")
-                .successHandler(authenticationSuccess)
-                .failureHandler(authenticationFailure)
-                .permitAll()
-        ;
-
-        http.logout() // 로그아웃
-                .logoutUrl("/member/logout") // default post
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true) // 세션 무효화
-                .deleteCookies("SESSION", "JSESSIONID", "remember-me")
-                .addLogoutHandler(logoutExecute)
-                .logoutSuccessHandler(logoutSuccess)
-        ;
-
-        http.rememberMe() // 사용자 저장
-                .rememberMeParameter("idMaintain") // default 파라미터는 remember-me
-                .tokenValiditySeconds(604800) // 7일로 설정(default 14일)
-                .alwaysRemember(false)
-                .userDetailsService(customUserDetailsService)
-        ;
-
-        http.sessionManagement()
-                .maximumSessions(1) // -1 무제한
-                .expiredUrl("/member/login") // 세션 만료
-        ;
-
-        http.exceptionHandling() // Exception 처리
-                .authenticationEntryPoint(authenticationEntryException) // 인증 예외
-                .accessDeniedHandler(accessDeniedHandlerException) // 인가 예외
-        ;
-
-        http.authenticationProvider(authProvider());
-
-        http.addFilterAfter(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-
+    @Override
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean
     public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
         AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
+        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManager());
         return ajaxLoginProcessingFilter;
+    }
+    @Bean
+    private AccessDeniedHandler accessDeniedHandler() {
+        AccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
+        ((CustomAccessDeniedHandler) accessDeniedHandler).setErrorPage("/denied");
+        return accessDeniedHandler;
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return authenticationManagerBean();
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
-
-    /**
-     * 정적 자원 및 루트 페이지 ignore
-     */
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring()
-//                .antMatchers("/**");
-//    }
 
 
 }

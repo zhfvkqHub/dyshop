@@ -1,7 +1,6 @@
-package com.zhfvkq.dyshop.security.provider;
+package com.zhfvkq.dyshop.security.ajax;
 
 import com.zhfvkq.dyshop.security.AccountContext;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,8 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Slf4j
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -47,15 +45,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 
         // 최종적인 인증 객체
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(accountContext.getMember(),null, accountContext.getAuthorities());
-
-        return authenticationToken;
+        return new AjaxAuthenticationToken(accountContext.getMember(), null, accountContext.getAuthorities());
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
         // 토큰 타입과 파라미터 타입이 일치하면 인증 처리.
-        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+        return authentication.equals(AjaxAuthenticationToken.class);
     }
 }
